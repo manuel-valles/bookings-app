@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/manuel-valles/bookings-app.git/pkg/config"
-	"github.com/manuel-valles/bookings-app.git/pkg/handlers"
-	"github.com/manuel-valles/bookings-app.git/pkg/render"
+	"github.com/manuel-valles/bookings-app.git/internal/config"
+	"github.com/manuel-valles/bookings-app.git/internal/handlers"
+	"github.com/manuel-valles/bookings-app.git/internal/render"
 )
 
 const address = ":8080"

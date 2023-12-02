@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/manuel-valles/bookings-app.git/pkg/config"
-	"github.com/manuel-valles/bookings-app.git/pkg/models"
-	"github.com/manuel-valles/bookings-app.git/pkg/render"
+	"github.com/manuel-valles/bookings-app.git/internal/config"
+	"github.com/manuel-valles/bookings-app.git/internal/models"
+	"github.com/manuel-valles/bookings-app.git/internal/render"
 )
 
 const cookieIP = "remote_ip"
