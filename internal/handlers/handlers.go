@@ -88,6 +88,10 @@ func (rp *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	rp.App.Session.Put(r.Context(), "reservation", reservation)
+
+	// To avoid many submits from the user, let's redirect
+	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
 }
 
 func (rp *Repository) Standards(w http.ResponseWriter, r *http.Request) {
@@ -130,4 +134,22 @@ func (rp *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 func (rp *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
+}
+
+func (rp *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
+	reservation, ok := rp.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+	if !ok {
+		log.Println("Cannot get item from session")
+		rp.App.Session.Put(r.Context(), "error", "Cannot get reservation from session")
+		http.Redirect(w, r, "/make-reservation", http.StatusTemporaryRedirect)
+		return
+	}
+
+	rp.App.Session.Remove(r.Context(), "reservation")
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.RenderTemplate(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }

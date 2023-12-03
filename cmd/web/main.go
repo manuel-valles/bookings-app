@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/manuel-valles/bookings-app.git/internal/config"
 	"github.com/manuel-valles/bookings-app.git/internal/handlers"
+	"github.com/manuel-valles/bookings-app.git/internal/models"
 	"github.com/manuel-valles/bookings-app.git/internal/render"
 )
 
@@ -20,6 +22,8 @@ var session *scs.SessionManager
 func main() {
 	// TODO: This should be based on environment variable instead
 	app.InProduction = false
+
+	gob.Register(models.Reservation{})
 
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
