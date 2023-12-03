@@ -20,6 +20,22 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Serving application on port %s\n", address)
+	server := &http.Server{
+		Addr:    address,
+		Handler: routes(&app),
+	}
+
+	err = server.ListenAndServe()
+	log.Fatal(err)
+}
+
+func run() error {
 	// TODO: This should be based on environment variable instead
 	app.InProduction = false
 
@@ -36,21 +52,14 @@ func main() {
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("Cannot create template cache")
+		return err
 	}
 	app.TemplateCache = tc
 	app.UseCache = app.InProduction
 
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
-
 	render.NewTemplates(&app)
 
-	fmt.Printf("Serving application on port %s\n", address)
-	server := &http.Server{
-		Addr:    address,
-		Handler: routes(&app),
-	}
-
-	err = server.ListenAndServe()
-	log.Fatal(err)
+	return nil
 }
