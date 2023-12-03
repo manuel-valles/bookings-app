@@ -13,6 +13,9 @@ import (
 )
 
 var app *config.AppConfig
+var functions = template.FuncMap{}
+var pathPageTemplates = "./templates/*.page.tmpl"
+var pathLayoutTemplates = "./templates/*.layout.tmpl"
 
 func NewTemplates(a *config.AppConfig) {
 	app = a
@@ -54,8 +57,6 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, data *m
 }
 
 func CreateTemplateCache() (map[string]*template.Template, error) {
-	pathPageTemplates := "./templates/*.page.tmpl"
-	pathLayoutTemplates := "./templates/*.layout.tmpl"
 	cache := map[string]*template.Template{}
 
 	// Get all files named *.page.tmpl from ./templates
@@ -66,7 +67,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 
 	for _, page := range pages {
 		name := filepath.Base(page)
-		t, err := template.New(name).ParseFiles(page)
+		t, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
 			return cache, err
 		}
