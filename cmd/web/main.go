@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/manuel-valles/bookings-app.git/internal/config"
 	"github.com/manuel-valles/bookings-app.git/internal/handlers"
+	"github.com/manuel-valles/bookings-app.git/internal/helpers"
 	"github.com/manuel-valles/bookings-app.git/internal/models"
 	"github.com/manuel-valles/bookings-app.git/internal/render"
 )
@@ -41,6 +43,9 @@ func run() error {
 
 	gob.Register(models.Reservation{})
 
+	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
@@ -60,6 +65,7 @@ func run() error {
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 	render.NewTemplates(&app)
+	helpers.NewHelpers(&app)
 
 	return nil
 }

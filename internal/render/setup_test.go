@@ -2,6 +2,7 @@ package render
 
 import (
 	"encoding/gob"
+	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -21,6 +22,9 @@ func TestMain(m *testing.M) {
 
 	// Test environment
 	mockedApp.InProduction = false
+
+	mockedApp.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	mockedApp.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// set up the session
 	session = scs.New()

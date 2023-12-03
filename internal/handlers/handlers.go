@@ -3,16 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/manuel-valles/bookings-app.git/internal/config"
 	"github.com/manuel-valles/bookings-app.git/internal/forms"
+	"github.com/manuel-valles/bookings-app.git/internal/helpers"
 	"github.com/manuel-valles/bookings-app.git/internal/models"
 	"github.com/manuel-valles/bookings-app.git/internal/render"
 )
-
-const cookieIP = "remote_ip"
 
 var Repo *Repository
 
@@ -31,20 +29,11 @@ func NewRepo(a *config.AppConfig) *Repository {
 }
 
 func (rp *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	remoteIP := r.RemoteAddr
-	rp.App.Session.Put(r.Context(), cookieIP, remoteIP)
-
 	render.RenderTemplate(w, r, "home.page.tmpl", &models.TemplateData{})
 }
 
 func (rp *Repository) About(w http.ResponseWriter, r *http.Request) {
-	stringMap := make(map[string]string)
-	stringMap["test"] = "Hello World!"
-
-	remoteIP := rp.App.Session.GetString(r.Context(), cookieIP)
-	stringMap[cookieIP] = remoteIP
-
-	render.RenderTemplate(w, r, "about.page.tmpl", &models.TemplateData{StringMap: stringMap})
+	render.RenderTemplate(w, r, "about.page.tmpl", &models.TemplateData{})
 }
 
 func (rp *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
@@ -61,7 +50,7 @@ func (rp *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 func (rp *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w, err)
 		return
 	}
 
@@ -125,7 +114,8 @@ func (rp *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 	}
 	out, err := json.MarshalIndent(res, "", "     ")
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w, err)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -139,7 +129,7 @@ func (rp *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 func (rp *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
 	reservation, ok := rp.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		log.Println("Cannot get item from session")
+		rp.App.ErrorLog.Println("Cannot get item from session")
 		rp.App.Session.Put(r.Context(), "error", "Cannot get reservation from session")
 		http.Redirect(w, r, "/make-reservation", http.StatusTemporaryRedirect)
 		return
