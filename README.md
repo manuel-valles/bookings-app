@@ -15,5 +15,7 @@ This is a **bookings and reservations app** built in **Go** (`v1.21.4`) that use
     - Apply it: `$ soda migrate`
     - Rollback: `$ soda migrate down`
     - Reset(rollback + apply): `$ soda migrate reset` 
-
-> **NOTE**: Disable auto-formatting in VSCode for Soda CLI to work properly (`database.yml`).
+  > **NOTE**: Disable auto-formatting in VSCode for Soda CLI to work properly (`database.yml`).
+- [PGX](https://pkg.go.dev/github.com/jackc/pgx/v5): PostgreSQL driver and toolkit:
+  - Install: `$ go get github.com/jackc/pgx/v5`
+  > **NOTE**: The latest version requires also another package: `$ go get github.com/jackc/pgx/v5/pgxpool@v5.5.0`

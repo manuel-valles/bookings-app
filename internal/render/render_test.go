@@ -7,8 +7,8 @@ import (
 	"github.com/manuel-valles/bookings-app.git/internal/models"
 )
 
-func TestNewTemplates(t *testing.T) {
-	NewTemplates(app)
+func TestNewRenderer(t *testing.T) {
+	NewRenderer(app)
 }
 
 func TestAddDefaultData(t *testing.T) {
@@ -31,7 +31,7 @@ func TestAddDefaultData(t *testing.T) {
 
 }
 
-func TestRenderTemplate(t *testing.T) {
+func TestTemplate(t *testing.T) {
 	pathPageTemplates = "../../templates/*.page.tmpl"
 	pathLayoutTemplates = "../../templates/*.layout.tmpl"
 
@@ -50,12 +50,12 @@ func TestRenderTemplate(t *testing.T) {
 
 	var mw mockedWriter
 
-	err = RenderTemplate(&mw, r, "home.page.tmpl", &models.TemplateData{})
+	err = Template(&mw, r, "home.page.tmpl", &models.TemplateData{})
 	if err != nil {
 		t.Error("Error writing template to browser", err)
 	}
 
-	err = RenderTemplate(&mw, r, "non-existent.page.tmpl", &models.TemplateData{})
+	err = Template(&mw, r, "non-existent.page.tmpl", &models.TemplateData{})
 	if err == nil {
 		t.Error("Rendered template that does not exist")
 	}

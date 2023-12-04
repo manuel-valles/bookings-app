@@ -51,10 +51,11 @@ func getRoutes() http.Handler {
 	// Use own data and not create templates every time
 	app.UseCache = true
 
+	// FIXME: This will be fixed once the repo has been fully implemented
 	repo := NewRepo(&app)
 	NewHandlers(repo)
 
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 
 	mux := chi.NewRouter()
 
